@@ -5,22 +5,114 @@ nav {
 nav a{
     color: white;
 }
+nav li:hover {
+
+    
+    animation-name: example;
+    animation-duration: 2s;
+  }
+  
+  @keyframes example {
+    from {font-size: 12px;}
+    to {font-size: 22px;}
+  }
+
+#img{
+    border: #080C0D 5px solid;
+    height: 225px; width: 100%; display: block;
+}
+#car_ini{
+    border: #080C0D 5px solid;
+    width:100%;
+     height:500px;
+}
+#video,#myVideo{
+    border: #080C0D 5px solid;
+    height: 225px; width: 100%; display: block;
+}
+#myVideo{
+    margin: auto;
+    height: auto; width: 60%; 
+}
+#sonido{
+    background-color: red;
+    cursor: pointer;
+}
+#T,#T1{
+    font-size:medium;
+}
+h1,#h1{
+    width: 100%;
+    text-align: center;
+    text-shadow: 2px 2px;
+}
+
+#formu{
+    width: 35%;
+    border: #080C0D 5px solid;
+    margin: auto;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-content: stretch;
+    align-items: center;
+}
+canvas{
+    border: 3px solid black;
+    margin: auto;
+}
+label{
+    font-size: 22px;
+    
+}
+#input{
+    box-shadow: 2px 2px;
+    border-radius: 5%;
+    width: 100%;
+}
+textarea{
+    box-shadow: 2px 2px;
+    width: 100%;
+    border-radius: 5%;
+}
+input:invalid {
+    background-color: ivory;
+    border: none;
+    outline: 2px solid red;
+    border-radius: 5px;
+}
 #nav_mio{
     top: 0%;
     margin: 0;
 }
 footer{
-    top: 90%;
-    height: 100;
+    bottom:0;
+    height: 50px;
+    width: 100%;
     background-color:#691870 ;
+    position:fixed;
 }
+footer p{
+color:white;
 
+}
 #reach{
     margin: auto;
 }
 .bod{
     background-color: #F2F2F2;
 }
+
+#bajo_video {
+    height: auto; width: 60%; 
+    display: flex;
+    flex-direction:row;
+    align-items: center;
+    margin: auto;
+    border: black 2px solid;
+  }
 
 /* Color Theme Swatches in Hex */
 .Copy-of-Black-Red-Silver-1-hex { color: #F2F2F2; }

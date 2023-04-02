@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Video Player</title>
+  </head>´
+
+  <script>
+
+    getVideo();  
+  </script>
+  <body>
+    <div  class="container" >
+      <video id="myVideo" loop>
+        <source id="get" src="x" >
+        tu navegador igual no soprta este tipo
+      </video>
+    
+      <div  id="bajo_video" class="row">
+          <div class="col-sm-6">
+            <button onclick="playPause()">Play/Pause</button>
+            <button onclick="changeSpeed(-0.25)">-0.25x</button>
+            <button onclick="normal()">1x</button>
+            <button onclick="changeSpeed(0.25)">+0.25x</button>
+            <input value="0,0" style="width:auto;" type="text" id="tiempo"   onchange="texto()">
+            <button onclick="max()">Max</button>
+          </div>
+          <div class="col-sm-6">
+            <p>&#127926;</p>
+            <input type="range" id="sonido" min="0" max="1" step="0.1" value="1" onchange="changeVolume()">
+
+            <p>&#8987;</p>
+            <label id="T">0</label>
+            <progress id="timep" min="0" max="1" value="0" onchange="barra()" ></progress>
+            <label id="T1"></label>
+          </div>
+      </div>
+  </div>
+  <br>
+  <br>
+  <br>
+  <br>
+    <script>
+      var vid = document.getElementById("myVideo");
+      var progress = document.getElementById("timep");
+
+      progress.onclick = function(e) {
+			var pos = (e.pageX  - progress.offsetLeft) / progress.offsetWidth;
+			vid.currentTime = pos * vid.duration;
+		};
+      function playPause() {
+        if (vid.paused) {
+          vid.play();
+        } else {
+          vid.pause();
+        }
+      }
+
+      function changeSpeed(speed) {
+        vid.playbackRate += speed;
+      }
+      function max() {
+        vid.requestFullscreen();
+      }
+      function normal() {
+        vid.playbackRate = 1;
+      }
+
+      function changeVolume() {
+        vid.volume = document.getElementById("sonido").value;
+      }
+      function seekVideo() {
+        var seekTime = vid.duration * document.getElementById("timep").value;
+        vid.currentTime = seekTime;
+      }
+      function barra() {
+        
+        vid.currentTime = document.getElementById("timep").value*vid.duration;
+      }
+      function texto() {
+        
+        vid.currentTime = document.getElementById("tiempo").value;
+      }
+      function updateSeekBar() {
+        document.getElementById("timep").value = vid.currentTime/vid.duration;
+        document.getElementById("tiempo").value = vid.currentTime.toFixed(1);
+        document.getElementById("T").innerHTML = Math.trunc(vid.currentTime);
+        document.getElementById("T1").innerHTML = Math.trunc(vid.currentTime-vid.duration);
+      }
+      vid.addEventListener("timeupdate", updateSeekBar);
+    </script>
+  </body>
+</html>
+

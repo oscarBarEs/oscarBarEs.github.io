@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Jugadores</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        /* Estilos CSS personalizados */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+        .rounded {
+            border-radius: 50px;
+        }
+        #canvas {
+        
+        width: 100%;
+        }
+    </style>
+    <script src="js/game.js"></script>
+</head>
+<body>
+    <!-- Aquí irá el contenido de la página -->
+    <div class="container-fluid">
+        <div class="row">
+            <div id="formulario" class="col-md-3 p-3 bg-dark text-light rounded">
+                <!-- Aquí irá el formulario y los controles de volumen y botón de iniciar partida -->
+                <form >
+                    <div class="form-group">
+                        <label for="nombre-jugador-1">Nombre del Jugador 1</label>
+                        <input type="text" class="form-control" id="nombre-jugador-1"
+                            placeholder="Introduce el nombre del jugador 1">
+                    </div>
+                    <div class="form-group">
+                        <label for="nombre-jugador-2">Nombre del Jugador 2</label>
+                        <input type="text" class="form-control" id="nombre-jugador-2"
+                            placeholder="Introduce el nombre del jugador 2">
+                    </div>
+                    <div class="form-group">
+                        <label for="color-jugador-1">Color del Jugador 1</label>
+                        <input type="color" id="color1">
+                    </div>
+                    <div class="form-group">
+                        <label for="color-jugador-2">Color del Jugador 2</label>
+                        <input type="color" id="color2">
+                    </div>
+                    <div class="form-group">
+                        <label for="volumen">Volumen</label>
+                        <input type="range" min="0" max="1" step="0.1" class="form-control-range" id="volumen">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Iniciar Partida</button>
+                </form>
+            </div>
+            <div class="col-md-9 p-9">
+                <!-- Aquí irá el canvas -->
+                <canvas id="canvas"  ></canvas>
+                <audio id="ad" loop ></audio>
+                <audio id="bala1"  ></audio>
+                <audio id="bala2"  ></audio>
+                <audio id="Disp"  ></audio>
+            </div>
+        </div>
+        <div class="row">
+            <p>Anterior Puntuacion : Óscar 10 - Noé 0</p>
+        </div>
+    </div>
+    <script>
+        var formularioHeight = document.getElementById('formulario').offsetHeight;
+        var formularioWidth =  window.innerWidth - document.getElementById('formulario').offsetWidth;
+        var canvas = document.getElementById('canvas');
+        canvas.height = formularioHeight ;
+        canvas.width = formularioWidth;
+    </script>
+    <!-- Scripts de Bootstrap y JQuery -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNSjKpie" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

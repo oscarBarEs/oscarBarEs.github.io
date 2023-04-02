@@ -1,0 +1,332 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+
+   <!--
+  <script language="javascript" src="/lib/addons/p5.sound.min.js"></script>
+   -->
+  
+   
+</head>
+
+<body>
+  
+
+  <div class="container">
+    
+    <h1 id="h1">Music provided by www.fiftysounds.com </h1>
+    <div id="can" style="width: 100%;height: 200px;">
+    <canvas id="canvas" ></canvas>
+    </div>
+    <div class="row">
+      <div class="col-sm-2">
+        <button onclick="play()">Play/Pause</button>
+      </div>
+
+      <div class=" dropdown-toggle col-sm-2" href="#"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><button type="button" class="btn btn-sm btn-outline-secondary" >Change Song</button> 
+        <div class="dropdown-menu" aria-labelledby="dropdown04" id="musics">
+          <!--
+            <a class="dropdown-item" onclick="Cargar('./html/multimedia/Sound.html','cuerpo');setAct(0);audioElement.pause();" href="#">Claire</a>
+            <a class="dropdown-item" onclick="Cargar('./html/multimedia/Sound.html','cuerpo');setAct(1);audioElement.pause();" href="#">Sarabande</a>
+            -->
+        </div>
+        
+      </div>
+      <div class="col-sm-2">
+        <input type="file" id="upload" />
+      
+      </div>
+      <div class="col-sm-2">
+        
+        <audio id="ad" controls></audio>
+      </div>
+    </div>
+      <div class="row">
+          <div class="col-sm-2">
+            
+                
+                <p>PAN CONTROL</p>
+                <input
+                class="panning-control"
+                type="range"
+                min="-1"
+                max="1"
+                step="0.1"
+                value="0"
+              />
+              <span class="panning-value">0</span>
+              <p>GAIN CONTROL</p>
+                <input
+                class="gain-control"
+                type="range"
+                min="0"
+                max="15"
+                step="0.2"
+                value="0.5"
+              />
+            <span class="gain-value">0</span>
+
+            <label for="voice">Voice setting</label>
+            <select id="voice" name="voice">
+              <option value="distortion">Distortion</option>
+              <option value="convolver">Reverb</option>
+              <option value="biquad">Bass Boost</option>
+              <option value="delay">Echo Delay</option>
+              <option value="off" selected>Off</option>
+            </select>
+          </div>
+          <div class="col-sm-2">
+            
+                
+            <p>oscillator</p>
+            <input
+            class="oscillator-control"
+            type="range"
+            min="1"
+            max="1200"
+            step="0.1"
+            value="400"
+          />
+          <span class="oscillator-value">0</span>
+          
+      </div>
+        </div>
+      
+        <div class="row">
+          <div class="col-sm-6">
+            <label >Segundos Restantes:</label>
+            <label id="Tt">0</label>
+            <br>
+            <label >Fichero:</label>
+            <label style="font-size: 50%;" id="pos">0</label>
+            <br>
+            <label >Estado:</label>
+            <label id="Es">0</label>
+            <br>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <script >
+
+   
+        var formularioHeight = document.getElementById('can').offsetHeight;
+        var formularioWidth =  document.getElementById('can').offsetWidth;
+        
+        var divHeight = document.getElementById('can').clientHeight;
+        var divWidth = document.getElementById('can').clientWidth;
+        
+        //var formularioWidth = document.getElementById('can').clientWidth;
+        var canvas = document.getElementById('canvas');
+        canvas.height = divHeight ;
+        canvas.width = divWidth;
+
+       /* */
+    //sound('resources/sounds/Clair de Lune Debussy.mp3');
+
+    // Create an AudioContext object
+    createSongDropdown(getList());
+    function createSongDropdown(songs) {
+  // Get the dropdown menu element
+  var dropdown = document.getElementById('musics');
+  
+  // Loop through the songs array and create an <a> element for each song
+  for (var i = 0; i < songs.length; i++) {
+    var song = songs[i];
+    
+    // Create the <a> element
+    var a = document.createElement('a');
+    a.classList.add('dropdown-item');
+    a.textContent = song.name;
+
+    a.setAttribute("onclick", "Cargar('./html/multimedia/Sound.html', 'cuerpo');setAct("+song.id+");audioElement.pause();");
+    // Add the onclick event to load the Sound.html and set the active song
+ 
+    
+    // Append the <a> element to the dropdown menu
+    dropdown.appendChild(a);
+  }
+}
+var inputElement = document.getElementById("upload");
+
+inputElement.addEventListener("change", handleFiles, false);
+
+function handleFiles() {
+  var fileList = this.files;
+  var file = fileList[0];
+
+    // Check if the file type is an audio type
+    if (file.type.startsWith('audio/')) {
+    
+    var objectUrl = URL.createObjectURL(file);
+    setSong(file.name,objectUrl);
+    Cargar('./html/multimedia/Sound.html','cuerpo');
+  } else {
+    alert(name + ' is not an audio file');
+    // Display an error message or do something else
+    // ...
+  }
+ 
+
+  
+}
+
+var audioContext = new AudioContext();
+
+
+//document.getElementById("upload").addEventListener("change", handleFiles, false);
+// Load the audio file using an Audio object
+var audioElement = document.querySelector("audio");
+//var audioElement = document.createElement('audio');
+audioElement.src =getSong(getAct());
+
+var Po=document.getElementById("pos");
+Po.innerHTML = getSongName(getAct());
+//PAN CONTROL
+var panControl = document.querySelector(".panning-control");
+var panValue = document.querySelector(".panning-value");
+var panNode = new StereoPannerNode(audioContext);
+// GAIN NODE
+var gainControl = document.querySelector(".gain-control");
+var gainValue = document.querySelector(".gain-value");
+var gainNode = audioContext.createGain();
+
+/// EFECTOS
+
+const distortion = audioCtx.createWaveShaper();
+
+const biquadFilter = audioCtx.createBiquadFilter();
+const convolver = audioCtx.createConvolver();
+// Create an AnalyserNode object
+//OSCILLATOR CONTROL
+/*
+var osControl = document.querySelector(".oscillator-control");
+var osValue = document.querySelector(".oscillator-value");
+var oscillator = audioContext.createOscillator();
+*/
+
+panControl.oninput = () => {
+  //panNode.pan.setValueAtTime(panControl.value, audioContext.currentTime);
+  panNode.pan.value = panControl.value;
+  panValue.innerHTML = panControl.value;
+};
+gainControl.oninput = () => {
+  //panNode.pan.setValueAtTime(panControl.value, audioContext.currentTime);
+  gainNode.gain.setValueAtTime(gainControl.value, audioContext.currentTime);
+  gainValue.innerHTML = gainControl.value;
+};
+/*
+osControl.oninput = () => {
+  //panNode.pan.setValueAtTime(panControl.value, audioContext.currentTime);
+  oscillator.frequency.setValueAtTime(440, audioContext.currentTime);
+  osValue.innerHTML = oscillator.value;
+};
+*/
+
+var analyserNode = audioContext.createAnalyser();
+// Connect the AnalyserNode to the audio source
+var sourceNode = audioContext.createMediaElementSource(audioElement);
+sourceNode.connect(panNode);
+panNode.connect(gainNode);
+
+gainNode.connect(analyserNode);
+
+
+/*
+gainNode.connect(oscillator);
+oscillator.connect(analyserNode);
+*/
+analyserNode.connect(audioContext.destination);
+
+// Create a CanvasRenderingContext2D object
+//var canvas = document.querySelector('canvas');
+var canvasCtx = canvas.getContext('2d');
+// Create a stereo panner
+
+
+
+
+// connect the MediaElementAudioSourceNode to the panNode
+// and the panNode to the destination, so we can play the
+// music and adjust the panning using the controls
+
+
+// Define the canvas drawing function
+function draw() {
+  // Get the frequency data from the AnalyserNode
+  var bufferLength = analyserNode.frequencyBinCount;
+  var dataArray = new Uint8Array(bufferLength);
+  analyserNode.getByteFrequencyData(dataArray);
+  panNode.connect(audioContext.destination);
+
+
+
+  var TT=document.getElementById("Tt");
+  TT.innerHTML = Math.trunc(audioElement.duration - audioElement.currentTime);
+
+  
+  var Es=document.getElementById("Es");
+  
+  if(audioElement.paused)
+  {
+    if(audioElement.currentTime==0){
+      Es.innerHTML = "Por Iniciar";
+    }else if (audioElement.currentTime==audioElement.duration)
+    {
+      Es.innerHTML = "Finalizado";
+    }else{
+      Es.innerHTML = "Pausado";
+    }
+  }else{
+    Es.innerHTML = "Reproduciendo";
+  }
+ 
+  // Clear the canvas
+  canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Draw the frequency spectrum
+  //var barWidth =  bufferLength/canvas.width ;
+
+  var barWidth =  canvas.width/bufferLength ;
+  //console.log(canvas.width + " / "+ bufferLength) ;
+  var barWidth =  canvas.width/100 ;
+  let x = 0;
+  for (let i = 0; i < bufferLength; i++) {
+    var barHeight = dataArray[i];
+    canvasCtx.fillStyle = 'rgb( 50,50,' + (barHeight + 100) +')';
+    canvasCtx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
+    x += barWidth;
+  }
+
+  // Call the draw function again on the next frame
+  requestAnimationFrame(draw);
+}
+
+// Start playing the audio and call the draw function
+audioElement.play();
+
+draw();
+
+function play(){
+  if (audioElement.paused){
+    audioElement.play();
+  }else audioElement.pause();
+}
+
+
+
+
+
+
+  </script>
+  
+</body>
+</html>
