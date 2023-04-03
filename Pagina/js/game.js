@@ -23,12 +23,13 @@ class Circulo{
     rad;
     color;
     punt;
-    constructor(posx,posy,rad,color,punt) {
+    constructor(posx,posy,rad,color,punt,jugador) {
       this.posx = posx;
       this.posy = posy;
       this.rad = rad;
       this.color = color;
       this.punt = punt;
+      this.jugador = jugador;
     }
 
   }
@@ -48,7 +49,83 @@ class Bala{
 var sourceNode;
 var sourceNodeBala1;
 var sourceNodeBala2;
-var sourceNodeDisp;
+var sourceNodeDispL;
+var panNodeDL;
+var sourceNodeDispR;
+var panNodeDR;
+///AUDIOS
+//AUDIO IZQUIERDA DISPARO
+var audioContextDispL = new AudioContext();
+var audioElementDispL = document.getElementById("DispL");
+audioElementDispL.src = "resources/sounds/sfx-impact6.mp3";
+var audioContextDispR = new AudioContext();
+var audioElementDispR = document.getElementById("DispR");
+audioElementDispR.src = "resources/sounds/sfx-impact6.mp3";
+if (audioElementDispL) {
+    
+
+    audioElementDispL.addEventListener("canplaythrough", function() {
+      // Si el nodo fuente no está definido o no está conectado, crea uno nuevo y conéctalo
+    if (!sourceNodeDispL || sourceNodeDispL.context.state === 'closed') {
+        sourceNodeDispL = audioContextDispL.createMediaElementSource(audioElementDispL);
+        panNodeDL = new StereoPannerNode(audioContextDispL);
+        panNodeDL.pan.value = -1;
+        console.log( panNodeDL.pan.value);
+        sourceNodeDispL.connect(panNodeDL);
+        panNodeDL.connect(audioContextDispL.destination);
+      }
+      //audioElementDisp.play();
+  })
+
+  }
+  //AUDIO DERECHA DISPARO
+  if (audioElementDispR) {
+    audioElementDispR.addEventListener("canplaythrough", function() {
+    // Si el nodo fuente no está definido o no está conectado, crea uno nuevo y conéctalo
+  if (!sourceNodeDispR || sourceNodeDispR.context.state === 'closed') {
+      sourceNodeDispR = audioContextDispR.createMediaElementSource(audioElementDispR);
+      panNodeDR = new StereoPannerNode(audioContextDispR);
+      panNodeDR.pan.value = 1;
+      console.log( panNodeDR.pan.value);
+      sourceNodeDispR.connect(panNodeDR);
+      panNodeDR.connect(audioContextDispR.destination);
+    }
+    //audioElementDisp.play();
+});
+}
+//AUDIO 
+var audioContextBala1 = new AudioContext();
+var audioElementBala1 = document.getElementById("bala1");
+
+if (audioElementBala1) {
+audioElementBala1.src = "resources/sounds/sfx-punch9.mp3";
+var panNode = new StereoPannerNode(audioContextBala1);
+panNode.pan.value = 1;
+audioElementBala1.addEventListener("canplaythrough", function() {
+    // Si el nodo fuente no está definido o no está conectado, crea uno nuevo y conéctalo
+    if (!sourceNodeBala1 || sourceNodeBala1.context.state === 'closed') {
+    sourceNodeBala1 = audioContextBala1.createMediaElementSource(audioElementBala1);
+    sourceNodeBala1.connect(panNode);
+    panNode.connect(audioContextBala1.destination);
+    }
+});
+}
+
+                            ///EFECTOS SONIDO
+                            /**/
+                            var audioContextBala2 = new AudioContext();
+                            var audioElementBala2 = document.getElementById("bala2");
+                            audioElementBala2.src ="resources/sounds/sfx-punch9.mp3";
+                            var panNodeBala2 = new StereoPannerNode(audioContextBala2);
+                            panNodeBala2.pan.value = -1;
+                            //sourceNode.connect(audioContext.destination);
+                                // Si el nodo fuente no está definido o no está conectado, crea uno nuevo y conéctalo
+                            if (!sourceNodeBala2 || sourceNodeBala2.context.state === 'closed') {
+                                    sourceNodeBala2 = audioContextBala2.createMediaElementSource(audioElementBala2);
+                                    sourceNodeBala2.connect(panNodeBala2);
+                                    panNodeBala2.connect(audioContextBala2.destination);
+                                }
+
 // Escuchar el evento submit del formulario
 window.addEventListener('resize', function() {
     //canvas.height=
@@ -89,40 +166,28 @@ form.addEventListener('submit', function(event) {
   console.log(jugador1 + " : "+ jugador2);
   
   
-  var Circulo1 = new Circulo(canvas.width/4 , canvas.height/2,50,color1,0);
-  var Circulo2 = new Circulo(canvas.width*3/4 , canvas.height/2,50,color2,0);
+  var Circulo1 = new Circulo(canvas.width/4 , canvas.height/2,50,color1,0,jugador1);
+  var Circulo2 = new Circulo(canvas.width*3/4 , canvas.height/2,50,color2,0,jugador2);
   var Balas=[];
     var i=0;
-
 
 var teclas = {};
 
 
 canvas.addEventListener("click", function(event) {
   var x = event.offsetX;
-  
-
   if (x<canvas.width/2)
   {
-    Balas.push(new Bala(Circulo1.posx + Circulo1.rad,Circulo1.posy,1,1));
+    Balas.push(new Bala(Circulo1.posx + Circulo1.rad,Circulo1.posy,9,1));
+    audioElementDispL.play();
   }else 
   {
-    Balas.push(new Bala(Circulo2.posx - Circulo2.rad,Circulo2.posy,-1,2));
+    Balas.push(new Bala(Circulo2.posx - Circulo2.rad,Circulo2.posy,-9,2));
+    audioElementDispR.play();
   }
 
-  var audioContextDisp = new AudioContext();
-  var audioElementDisp = document.getElementById("Disp");
-  if (audioElementDisp) {
-    audioElementDisp.src = "resources/sounds/sfx-impact6.mp3";
-    audioElementDisp.addEventListener("canplaythrough", function() {
-      // Si el nodo fuente no está definido o no está conectado, crea uno nuevo y conéctalo
-      if (!sourceNodeDisp || sourceNodeDisp.context.state === 'closed') {
-        sourceNodeDisp = audioContextDisp.createMediaElementSource(audioElementDisp);
-        sourceNodeDisp.connect(audioContextDisp.destination);
-      }
-      audioElementDisp.play();
-  });
-  }
+
+
 });
 
 document.addEventListener('keydown', (event) => {
@@ -203,14 +268,6 @@ function draw (){
         Circulo2.posy-=5;
     }
     
-    //BALAS LANZADAS
-
-    if (teclas['e']) {
-        
-    }
-    if (teclas['Shift']) {
-        
-    }
           // Clear the canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#000000"; 
@@ -238,7 +295,7 @@ function draw (){
         drawCirculo(Circulo2);
 
         i++;
-        requestAnimationFrame(draw);
+        
         //console.log(Balas);
         if (Balas.length >=1)
         {
@@ -265,34 +322,12 @@ function draw (){
                         }else Balas=[];
 
                         Circulo1.punt+=1;
-                        /*
-                        var audioContextBala1 = new AudioContext();
-                        var audioElementBala1 = document.getElementById("bala1");
-                        audioElementBala1.src ="resources/sounds/sfx-impact6.mp3";
-                        
-                        //sourceNode.connect(audioContext.destination);
-                            // Si el nodo fuente no está definido o no está conectado, crea uno nuevo y conéctalo
-                        if (!sourceNodeBala1 || sourceNodeBala1.context.state === 'closed') {
-                                sourceNodeBala1 = audioContextBala1.createMediaElementSource(audioElementBala1);
-                                sourceNodeBala1.connect(audioContextBala1.destination);
-                            }
-                        audioElementBala1.play();
-                        */
+     
                         ///EFECTOS SONIDO
                         
-                        var audioContextBala1 = new AudioContext();
-                        var audioElementBala1 = document.getElementById("bala1");
-                        if (audioElementBala1) {
-                        audioElementBala1.src = "resources/sounds/sfx-punch9.mp3";
-                        audioElementBala1.addEventListener("canplaythrough", function() {
-                            // Si el nodo fuente no está definido o no está conectado, crea uno nuevo y conéctalo
-                            if (!sourceNodeBala1 || sourceNodeBala1.context.state === 'closed') {
-                            sourceNodeBala1 = audioContextBala1.createMediaElementSource(audioElementBala1);
-                            sourceNodeBala1.connect(audioContextBala1.destination);
-                            }
-                            audioElementBala1.play();
-                        });
-                        }
+
+                        audioElementBala1.play();
+
                         /**/
 
                     }else if(Balas[x].posx<0){
@@ -329,18 +364,7 @@ function draw (){
                             }else Balas=[];
 
                             Circulo2.punt+=1;
-                            ///EFECTOS SONIDO
-                            /**/
-                            var audioContextBala2 = new AudioContext();
-                            var audioElementBala2 = document.getElementById("bala2");
-                            audioElementBala2.src ="resources/sounds/sfx-impact6.mp3";
-                            
-                            //sourceNode.connect(audioContext.destination);
-                                // Si el nodo fuente no está definido o no está conectado, crea uno nuevo y conéctalo
-                            if (!sourceNodeBala2 || sourceNodeBala2.context.state === 'closed') {
-                                    sourceNodeBala2 = audioContextBala2.createMediaElementSource(audioElementBala2);
-                                    sourceNodeBala2.connect(audioContextBala2.destination);
-                                }
+
                             audioElementBala2.play();
                             
 
@@ -364,8 +388,19 @@ function draw (){
                 
             }
         }
- 
-        /*
+ if(Circulo1.punt>20)
+ {
+    drawGanador(Circulo1);
+    return;
+ }else if(Circulo2.punt>20)
+ {
+    drawGanador(Circulo1);
+    return;
+ }else{
+    requestAnimationFrame(draw);
+ }
+    
+ /*
         ctx.fillStyle(color2);
 
         circle(canvas.width*3/4,canvas.height/2)
@@ -388,5 +423,25 @@ function drawCirculo(c){
     ctx.arc(c.posx, c.posy, c.rad, 0, 2 * Math.PI);
     ctx.fill();
     ctx.closePath();
+}
+function drawGanador(C){
+    // Clear the canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#000000"; 
+
+    ///
+    ctx.fillStyle=C.color;
+    ctx.beginPath();
+    ctx.arc(canvas.width/2, canvas.height/2, 60, 0, 2 * Math.PI);
+    ctx.fill();
+    ctx.closePath();
+    ///
+    // Dibujar los nombres en el canvas
+    ctx.font = 'bold 48px sans-serif';
+    ctx.textAlign = 'center';
+    //ctx.fillStyle = jugador1Nombre.value;
+        
+    ctx.fillText("Ganador : "+C.jugador , canvas.width/2,  canvas.height/9 );
+
 }
 
