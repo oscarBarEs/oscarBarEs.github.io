@@ -25,10 +25,7 @@
 
       <div class=" dropdown-toggle col-sm-2" href="#"  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><button type="button" class="btn btn-sm btn-outline-secondary" >Change Song</button> 
         <div class="dropdown-menu" aria-labelledby="dropdown04" id="musics">
-          <!--
-            <a class="dropdown-item" onclick="Cargar('./html/multimedia/Sound.html','cuerpo');setAct(0);audioElement.pause();" href="#">Claire</a>
-            <a class="dropdown-item" onclick="Cargar('./html/multimedia/Sound.html','cuerpo');setAct(1);audioElement.pause();" href="#">Sarabande</a>
-            -->
+
         </div>
         
       </div>
@@ -181,7 +178,6 @@ function handleFiles() {
 
 var audioContext = new AudioContext();
 
-
 //document.getElementById("upload").addEventListener("change", handleFiles, false);
 // Load the audio file using an Audio object
 var audioElement = document.querySelector("audio");
@@ -198,13 +194,53 @@ var panNode = new StereoPannerNode(audioContext);
 var gainControl = document.querySelector(".gain-control");
 var gainValue = document.querySelector(".gain-value");
 var gainNode = audioContext.createGain();
+ 
 
 /// EFECTOS
+voiceSelect = document.getElementById("voice");
+ distortion = audioContext.createWaveShaper();
 
-const distortion = audioCtx.createWaveShaper();
+ biquadFilter = audioContext.createBiquadFilter();
+ convolver = audioContext.createConvolver();
 
-const biquadFilter = audioCtx.createBiquadFilter();
-const convolver = audioCtx.createConvolver();
+ echoDelay = createEchoDelayEffect(audioContext);
+
+ function createEchoDelayEffect(audioContext) {
+    const delay = audioContext.createDelay(1);
+    const dryNode = audioContext.createGain();
+    const wetNode = audioContext.createGain();
+    const mixer = audioContext.createGain();
+    const filter = audioContext.createBiquadFilter();
+
+    delay.delayTime.value = 0.75;
+    dryNode.gain.value = 1;
+    wetNode.gain.value = 0;
+    filter.frequency.value = 1100;
+    filter.type = "highpass";
+
+    return {
+      apply: function () {
+        wetNode.gain.setValueAtTime(0.75, audioContext.currentTime);
+      },
+      discard: function () {
+        wetNode.gain.setValueAtTime(0, audioContext.currentTime);
+      },
+      isApplied: function () {
+        return wetNode.gain.value > 0;
+      },
+      placeBetween: function (inputNode, outputNode) {
+        inputNode.connect(delay);
+        delay.connect(wetNode);
+        wetNode.connect(filter);
+        filter.connect(delay);
+
+        inputNode.connect(dryNode);
+        dryNode.connect(mixer);
+        wetNode.connect(mixer);
+        mixer.connect(outputNode);
+      },
+    };
+  }
 // Create an AnalyserNode object
 //OSCILLATOR CONTROL
 /*
@@ -230,17 +266,85 @@ osControl.oninput = () => {
   osValue.innerHTML = oscillator.value;
 };
 */
+function makeDistortionCurve(amount) {
+    let k = typeof amount === "number" ? amount : 50,
+      n_samples = 44100,
+      curve = new Float32Array(n_samples),
+      deg = Math.PI / 180,
+      i = 0,
+      x;
+    for (; i < n_samples; ++i) {
+      x = (i * 2) / n_samples - 1;
+      curve[i] = ((3 + k) * x * 20 * deg) / (Math.PI + k * Math.abs(x));
+    }
+    return curve;
+  }
+
+function voiceChange() {
+    distortion.oversample = "4x";
+    biquadFilter.gain.setTargetAtTime(0, audioContext.currentTime, 0);
+
+    const voiceSetting = voiceSelect.value;
+    console.log(voiceSetting);
+
+    if (echoDelay.isApplied()) {
+      echoDelay.discard();
+    }
+
+    // When convolver is selected it is connected back into the audio path
+    if (voiceSetting == "convolver") {
+      biquadFilter.disconnect(0);
+      biquadFilter.connect(convolver);
+    } else {
+      biquadFilter.disconnect(0);
+      biquadFilter.connect(gainNode);
+
+      if (voiceSetting == "distortion") {
+        distortion.curve = makeDistortionCurve(400);
+      } else if (voiceSetting == "biquad") {
+        biquadFilter.type = "lowshelf";
+        biquadFilter.frequency.setTargetAtTime(1000, audioContext.currentTime, 0);
+        biquadFilter.gain.setTargetAtTime(25, audioContext.currentTime, 0);
+      } else if (voiceSetting == "delay") {
+        echoDelay.apply();
+      } else if (voiceSetting == "off") {
+        console.log("Voice settings turned off");
+      }
+    }
+  }
+
+  voiceSelect.onchange = function () {
+    voiceChange();
+  };
+
+
 
 var analyserNode = audioContext.createAnalyser();
 // Connect the AnalyserNode to the audio source
 var sourceNode = audioContext.createMediaElementSource(audioElement);
 sourceNode.connect(panNode);
-panNode.connect(gainNode);
+panNode.connect(distortion);
+
+distortion.connect(biquadFilter);
+convolver.connect(gainNode);
+biquadFilter.connect(gainNode);
+
+echoDelay.placeBetween(gainNode, analyserNode);
 
 gainNode.connect(analyserNode);
 
 
 /*
+        source = audioCtx.createMediaStreamSource(stream);
+        source.connect(distortion);
+        distortion.connect(biquadFilter);
+        biquadFilter.connect(gainNode);
+        convolver.connect(gainNode);
+        echoDelay.placeBetween(gainNode, analyser);
+        analyser.connect(audioCtx.destination);
+
+
+
 gainNode.connect(oscillator);
 oscillator.connect(analyserNode);
 */
@@ -297,7 +401,7 @@ function draw() {
 
   var barWidth =  canvas.width/bufferLength ;
   //console.log(canvas.width + " / "+ bufferLength) ;
-  var barWidth =  canvas.width/100 ;
+  //var barWidth =  canvas.width/100 ;
   let x = 0;
   for (let i = 0; i < bufferLength; i++) {
     var barHeight = dataArray[i];
