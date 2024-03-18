@@ -1086,6 +1086,17 @@ input[type="button"]:focus {
     overflow: hidden
 }
 
+.app-design__image {
+    position: absolute;
+    top: 1%;
+    /* adjust these values according to your image */
+    left: 20%;
+    width: 30%;
+    height: 100%;
+    transform: rotate(300deg);
+    /* adjust this value to rotate the image */
+}
+
 .app-design__visual {
     position: absolute;
     top: 35px;
