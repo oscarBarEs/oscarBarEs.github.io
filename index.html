@@ -9,12 +9,31 @@
 	<meta name="description" content="PortFolio of Óscar Barquilla Esteban">
 	<meta name="keywords" content="free html template, portfolio, html5, sass, jquery">
 	<meta name="author" content="Bucky Maler">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+		integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+	<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+		integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
 	<link rel="stylesheet" href="assets/css/main.css">
+	<style>
+		#map {
+			height: 200px;
+		}
+	</style>
+	<script>
+		var mapi = L.map('map').setView([43.4687, -3.93], 11);
+		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			maxZoom: 19,
+			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+		}).addTo(mapi);
+		var marker = L.marker([43.460669, -3.926407]).addTo(mapi);
+	</script>
 </head>
 
 <body>
-
 	<!-- SECTION: Splashscreen -->
+	<div>
+		<div id="map"></div>
+	</div>
 	<div class="splashscreen">
 		<div class="preloader">
 			<span class="preloader__text">Loading</span>
@@ -244,17 +263,19 @@
 			<h2 class="contact__heading title">Contact Me</h2>
 			<div class="contact__wrapper wrapper--large">
 				<div class="contact__visual">
-					<img src="assets/img/contact-visual.png" alt="James Martin's location">
+					<!-- <img src="assets/img/contact-visual.png" alt="James Martin's location"> -->
+
 				</div>
-				<!-- Simple form setup: formspree.io -->
-				<form class="contact__form">
-					<input class="contact__form-el contact__form-el--name" type="text" placeholder="Your Name"
-						spellcheck="false">
-					<input class="contact__form-el contact__form-el--email" type="email" placeholder="Your Email"
-						spellcheck="false">
-					<textarea class="contact__form-el contact__form-el--message" placeholder="Your Message"></textarea>
-					<input class="contact__form-el contact__form-el--submit" type="submit" value="Send">
-				</form>
+			</div>
+			<!-- Simple form setup: formspree.io -->
+			<form class="contact__form">
+				<input class="contact__form-el contact__form-el--name" type="text" placeholder="Your Name"
+					spellcheck="false">
+				<input class="contact__form-el contact__form-el--email" type="email" placeholder="Your Email"
+					spellcheck="false">
+				<textarea class="contact__form-el contact__form-el--message" placeholder="Your Message"></textarea>
+				<input class="contact__form-el contact__form-el--submit" type="submit" value="Send">
+			</form>
 			</div>
 		</section>
 		<!-- END SECTION: Contact -->
