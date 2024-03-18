@@ -9,31 +9,13 @@
 	<meta name="description" content="PortFolio of Óscar Barquilla Esteban">
 	<meta name="keywords" content="free html template, portfolio, html5, sass, jquery">
 	<meta name="author" content="Bucky Maler">
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
-		integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
-	<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
-		integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+
 	<link rel="stylesheet" href="assets/css/main.css">
-	<style>
-		#map {
-			height: 200px;
-		}
-	</style>
-	<script>
-		var mapi = L.map('map').setView([43.4687, -3.93], 11);
-		L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-			maxZoom: 19,
-			attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-		}).addTo(mapi);
-		var marker = L.marker([43.460669, -3.926407]).addTo(mapi);
-	</script>
+
 </head>
 
 <body>
-	<!-- SECTION: Splashscreen -->
-	<div>
-		<div id="map"></div>
-	</div>
+
 	<div class="splashscreen">
 		<div class="preloader">
 			<span class="preloader__text">Loading</span>
@@ -86,12 +68,19 @@
 			<div class="about__wrapper wrapper--small">
 				<div class="about__content">
 					<div class="about__content-blurb blurb blurb--framed">
-						<h2 class="blurb__heading">Nothing is<br>impossible</h2>
-						<p class="blurb__copy no-margin">If you just work hard enough at it</p>
+						<h2 class="blurb__heading">Multimedia<br>Engeneer</h2>
+						<p class="blurb__copy no-margin">As a student on Valencia University and during my Internship at
+							Capgemini, I have acquired skills in
+							web and mobile programming, which have allowed me to create and develop multimedia solutions
+							using programming languages such as HTML, CSS, JavaScript, TypeScript and Java, Python, C++,
+							C#...
+							<br>Additionally, I have learned to use popular frameworks and libraries like React,
+							Angular, Swing, Three and Bootstrap.
+							<br> On my journey I have also learned how to create VideoGames,
+							animations and simulations using software like Blender, Unity,Unreal.
+						</p>
 					</div>
-					<p class="about__content-signature">Óscar Barquilla</p>
 				</div>
-				<img class="about__visual" src="assets/img/about-visual.png" alt="James Martin">
 			</div>
 		</section>
 		<!-- END SECTION: About -->
@@ -137,7 +126,7 @@
 			<div class="web-design__wrapper wrapper--small">
 				<div class="web-design__content blurb">
 					<h2 class="blurb__heading">Realistic<br>Simulations</h2>
-					<p class="blurb__copy blurb__copy--tight">During my time at the university
+					<p class="blurb__copy blurb__copy--tight">Using Blender, Unity and Java processing
 						I have been able to learn how to simulate real world physics like the ones in the video. I also
 						learn to animate using PBD, body tracker, keyframes and much more.</p>
 				</div>
@@ -165,7 +154,8 @@
 									have and arrhythmia or not.</p>
 
 							</div>
-							<a class="transform-link" href="#0">See uncomplet project</a>
+							<a class="transform-link" href="https://github.com/oscarBarEs/myTFG">See uncomplet
+								project</a>
 						</div>
 						<div class="work__visual">
 							<img src="assets/img/heartViewer.png" width="672px" height="459px" alt="Strategik INC">
@@ -178,7 +168,8 @@
 								<p class="blurb__copy">The application reads from the output of a multiSim and show the
 									result with a table and a chart so the doctor can easily read it.</p>
 							</div>
-							<a class="transform-link" href="#0">See uncomplet project</a>
+							<a class="transform-link" href="https://github.com/oscarBarEs/myTFG">See uncomplet
+								project</a>
 						</div>
 						<div class="work__visual">
 							<img src="assets/img/dataViewer.png" width="672px" height="459px" alt="Data viewer">
@@ -258,27 +249,6 @@
 			</div>
 		</section>
 		<!-- END SECTION: Blog -->
-		<!-- SECTION: Contact -->
-		<section id="contact" class="contact">
-			<h2 class="contact__heading title">Contact Me</h2>
-			<div class="contact__wrapper wrapper--large">
-				<div class="contact__visual">
-					<!-- <img src="assets/img/contact-visual.png" alt="James Martin's location"> -->
-
-				</div>
-			</div>
-			<!-- Simple form setup: formspree.io -->
-			<form class="contact__form">
-				<input class="contact__form-el contact__form-el--name" type="text" placeholder="Your Name"
-					spellcheck="false">
-				<input class="contact__form-el contact__form-el--email" type="email" placeholder="Your Email"
-					spellcheck="false">
-				<textarea class="contact__form-el contact__form-el--message" placeholder="Your Message"></textarea>
-				<input class="contact__form-el contact__form-el--submit" type="submit" value="Send">
-			</form>
-			</div>
-		</section>
-		<!-- END SECTION: Contact -->
 	</main>
 	<!-- SECTION: Footer -->
 	<footer class="footer">
